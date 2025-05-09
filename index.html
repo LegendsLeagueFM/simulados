@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-T">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz Constitucional Interativo</title>
+    <title>Quiz Constitucional Interativo v2</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -13,315 +13,348 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background-color: #f0f4f8; /* Tailwind bg-slate-100 */
+            background-color: #f0f4f8; /* bg-slate-100 */
             margin: 0;
             padding: 1rem;
+            color: #1e293b; /* text-slate-800 */
         }
         #game-container {
             background-color: white;
-            padding: 1.5rem; /* Tailwind p-6 */
-            border-radius: 0.5rem; /* Tailwind rounded-lg */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* Tailwind shadow-md */
+            padding: 1.5rem; /* p-6 */
+            border-radius: 0.75rem; /* rounded-xl */
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
             width: 100%;
-            max-width: 600px;
+            max-width: 650px; /* Increased max-width slightly */
             text-align: center;
         }
-        .option-button, #skip-button, #start-button, #restart-button {
-            transition: background-color 0.3s ease, transform 0.1s ease;
+        .button-base {
+            font-weight: 600; /* font-semibold */
+            padding: 0.75rem 1rem; /* py-3 px-4 */
+            border-radius: 0.5rem; /* rounded-lg */
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+            border: none;
+            color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
-        .option-button:hover, #skip-button:hover, #start-button:hover, #restart-button:hover {
-            filter: brightness(90%);
+        .button-base:hover {
+            filter: brightness(110%);
         }
-        .option-button:active, #skip-button:active, #start-button:active, #restart-button:active {
-            transform: scale(0.98);
+        .button-base:active {
+            transform: scale(0.97);
         }
-        #analog-clock {
-            margin: 1rem auto; /* Tailwind my-4 mx-auto */
-            display: block;
+        .option-button {
+            background-color: #38bdf8; /* bg-sky-500 */
         }
+        .option-button:hover {
+            background-color: #0ea5e9; /* hover:bg-sky-600 */
+        }
+        #skip-button {
+            background-color: #f59e0b; /* bg-amber-500 */
+        }
+        #skip-button:hover {
+            background-color: #d97706; /* hover:bg-amber-600 */
+        }
+        #skip-button:disabled {
+            background-color: #a1a1aa; /* bg-zinc-400 */
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        #start-button, #restart-button {
+            background-color: #22c55e; /* bg-emerald-500 */
+            font-size: 1.125rem; /* text-lg */
+        }
+         #start-button:hover, #restart-button:hover {
+            background-color: #16a34a; /* hover:bg-emerald-600 */
+        }
+
         #status-bar {
             display: flex;
-            justify-content: space-between;
+            justify-content: space-around; /* Space out items more */
             align-items: center;
-            margin-bottom: 1rem; /* Tailwind mb-4 */
-            font-size: 0.875rem; /* Tailwind text-sm */
-            color: #4A5568; /* Tailwind text-gray-700 */
-        }
-        #lives-container span, #skips-container span {
-            display: inline-block;
-            margin-left: 0.25rem; /* Tailwind ml-1 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            font-size: 0.875rem; /* text-sm */
+            color: #475569; /* text-slate-600 */
+            padding: 0.5rem;
+            background-color: #f1f5f9; /* bg-slate-100 */
+            border-radius: 0.375rem; /* rounded-md */
         }
         .heart-icon {
-            color: #E53E3E; /* Tailwind text-red-600 */
-            font-size: 1.25rem; /* Tailwind text-xl */
+            color: #ef4444; /* text-red-500 */
+            font-size: 1.25rem; /* text-xl */
+            margin-left: 0.125rem; /* ml-0.5 */
         }
         #question-text {
-            min-height: 60px; /* Adjust as needed to prevent layout shifts */
-            margin-bottom: 1rem; /* Tailwind mb-4 */
-            font-size: 1.125rem; /* Tailwind text-lg */
-            color: #2D3748; /* Tailwind text-gray-800 */
+            min-height: 80px; 
+            margin-bottom: 1.5rem; /* mb-6 */
+            font-size: 1.125rem; /* text-lg */
+            line-height: 1.6; /* leading-relaxed */
+            color: #334155; /* text-slate-700 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
         #options-area button {
             width: 100%;
-            margin-bottom: 0.5rem; /* Tailwind mb-2 */
+            margin-bottom: 0.75rem; /* mb-3 */
         }
         #message-area {
-            min-height: 24px; /* To prevent layout shift */
-            margin-top: 1rem; /* Tailwind mt-4 */
-            font-weight: 600; /* Tailwind font-semibold */
+            min-height: 28px; 
+            margin-top: 1rem; /* mt-4 */
+            margin-bottom: 1.5rem; /* mb-6 */
+            font-weight: 600; /* font-semibold */
+            font-size: 1.125rem; /* text-lg */
         }
-        .message-correct {
-            color: #38A169; /* Tailwind text-green-600 */
+        .message-correct { color: #16a34a; /* text-green-600 */ }
+        .message-incorrect { color: #dc2626; /* text-red-600 */ }
+        .message-info { color: #52525b; /* text-zinc-600 */ }
+        
+        #digital-timer {
+            font-size: 2rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: #0ea5e9; /* text-sky-600 */
+            margin-bottom: 1.5rem; /* mb-6 */
         }
-        .message-incorrect {
-            color: #E53E3E; /* Tailwind text-red-600 */
+
+        #initial-message-screen, #win-screen, #lose-screen {
+            display: none; /* Hidden by default */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
         }
-        .message-info {
-            color: #4A5568; /* Tailwind text-gray-700 */
+        #win-screen {
+            /* IMPORTANT: Replace the placeholder URL below with the actual path to your 'trufas.jpg' image 
+              if you are hosting this game yourself, or use a direct URL to an image you have rights to use.
+              Example for local file: background-image: url('trufas.jpg');
+              Example for online image: background-image: url('https://your-image-host.com/trufas.jpg');
+            */
+            background-image: url('https://images.pexels.com/photos/7627416/pexels-photo-7627416.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            border-radius: 0.75rem; /* rounded-xl */
         }
-         /* Ensure clock hands are above the face markings */
-        #second-hand { z-index: 10; }
-        .clock-marking {
-            font-size: 10px; /* Tailwind text-xs, approx */
-            fill: #4A5568; /* Tailwind text-gray-700 */
+        #win-screen-content, #lose-screen-content {
+            background-color: rgba(0,0,0, 0.6); /* Semi-transparent overlay */
+            padding: 2rem;
+            border-radius: 0.5rem; /* rounded-lg */
+            text-align: center;
+        }
+        #win-screen h2, #lose-screen h2 {
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            margin-bottom: 1rem;
+        }
+        #win-screen p, #lose-screen p {
+            font-size: 1.125rem; /* text-lg */
+            margin-bottom: 1.5rem;
+        }
+        .game-content { /* Wrapper for elements to be hidden/shown */
+            display: none; /* Hidden initially, shown after start */
         }
     </style>
 </head>
 <body>
-    <div id="game-container" class="bg-white p-6 rounded-lg shadow-xl w-full max-w-2xl text-center">
-        <h1 class="text-2xl font-bold mb-6 text-slate-700">Quiz Constitucional</h1>
-        
-        <div id="status-bar" class="flex justify-between items-center mb-6 text-slate-600">
-            <div id="lives-container">
-                Vidas: 
-                <span id="lives-icons">
-                    <span class="heart-icon">❤️</span>
-                    <span class="heart-icon">❤️</span>
-                    <span class="heart-icon">❤️</span>
-                </span>
+    <div id="game-container">
+        <h1 class="text-3xl font-bold mb-4 text-slate-700">Quiz Constitucional Avançado</h1>
+
+        <div id="initial-message-screen" class="text-center p-4">
+            <h2 class="text-2xl font-semibold mb-3 text-sky-600">Bem-vindo(a) ao Desafio!</h2>
+            <p class="mb-4 text-slate-600">
+                Teste seus conhecimentos em Direito Constitucional! Responda corretamente a <strong>15 perguntas</strong>.
+                Se você vencer, uma doce recompensa espera por você: <strong>3 deliciosas trufas da Cacau Show!</strong> 🍫😋
+            </p>
+            <p class="text-sm text-slate-500 mb-6">Você tem 3 vidas e pode pular 1 pergunta. Cada pergunta tem 1 minuto.</p>
+            <button id="start-button" class="button-base">Iniciar Jogo</button>
+        </div>
+
+        <div class="game-content">
+            <div id="status-bar">
+                <div>Vidas: <span id="lives-icons"></span></div>
+                <div>Pular: <span id="skip-count" class="font-semibold">1</span></div>
+                <div>Pontos: <span id="score" class="font-semibold">0</span></div>
+                <div>Questão: <span id="question-counter" class="font-semibold">0 / 15</span></div>
             </div>
-            <div id="skips-container">
-                Pular: <span id="skip-count" class="font-semibold">1</span>
+
+            <div id="digital-timer" class="text-3xl font-bold text-sky-500 my-4">01:00</div>
+
+            <div id="question-area" class="mb-6">
+                <p id="question-text" class="text-lg text-slate-800 min-h-[72px] flex items-center justify-center p-2"></p>
             </div>
-            <div>Pontos: <span id="score" class="font-semibold">0</span></div>
-        </div>
 
-        <div id="clock-container" class="my-6">
-            <svg id="analog-clock" width="120" height="120" viewBox="0 0 100 100">
-                <circle cx="50" cy="50" r="48" stroke="#CBD5E0" stroke-width="3" fill="#F8FAFC" /> {/* Tailwind stroke-slate-300, fill-slate-50 */}
-                {/* Markings */}
-                <text x="46" y="15" class="clock-marking">12</text>
-                <text x="83" y="54" class="clock-marking">3</text>
-                <text x="47" y="90" class="clock-marking">6</text>
-                <text x="10" y="54" class="clock-marking">9</text>
-                <line id="second-hand" x1="50" y1="50" x2="50" y2="15" stroke="#F56565" stroke-width="2.5" stroke-linecap="round" /> {/* Tailwind stroke-red-500 */}
-            </svg>
-        </div>
-
-        <div id="question-area" class="mb-6">
-            <p id="question-text" class="text-lg text-slate-800 min-h-[72px] flex items-center justify-center"></p>
-        </div>
-
-        <div id="options-area" class="grid grid-cols-1 gap-3 mb-6">
-            <button class="option-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow" id="option1"></button>
-            <button class="option-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow" id="option2"></button>
+            <div id="options-area" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+                <button class="option-button button-base" id="option1"></button>
+                <button class="option-button button-base" id="option2"></button>
+            </div>
+            
+            <button id="skip-button" class="button-base mb-6">Pular Pergunta</button>
+            <div id="message-area" class="text-md font-semibold min-h-[28px] mb-6"></div>
         </div>
         
-        <button id="skip-button" class="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-5 rounded-lg shadow mb-6">Pular Pergunta</button>
+        <div id="win-screen">
+            <div id="win-screen-content">
+                <h2>Parabéns, Mestre da Constituição! 🎉</h2>
+                <p>Você acertou todas as perguntas e provou seu conhecimento!</p>
+                <p class="text-2xl font-bold my-4">Você ganhou 3 trufas da Cacau Show!</p>
+                <img src="https://images.pexels.com/photos/1729931/pexels-photo-1729931.jpeg?auto=compress&cs=tinysrgb&w=300&h=200&dpr=1" alt="Imagem de Trufas de Chocolate" class="mx-auto my-4 rounded-lg shadow-md" onerror="this.style.display='none'">
+                <button id="restart-button-win" class="button-base bg-emerald-500 hover:bg-emerald-600">Jogar Novamente</button>
+            </div>
+        </div>
 
-        <div id="message-area" class="text-md font-semibold min-h-[24px] mb-6"></div>
+        <div id="lose-screen">
+             <div id="lose-screen-content">
+                <h2>Fim de Jogo! 💔</h2>
+                <p>Não foi desta vez, mas continue estudando!</p>
+                <p>Sua pontuação final foi: <span id="final-score-lose" class="font-bold">0</span>.</p>
+                <button id="restart-button-lose" class="button-base bg-sky-500 hover:bg-sky-600">Tentar Novamente</button>
+            </div>
+        </div>
 
-        <button id="start-button" class="bg-emerald-500 hover:bg-emerald-600 text-white font-bold py-3 px-6 rounded-lg shadow text-lg">Iniciar Jogo</button>
-        <button id="restart-button" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg shadow text-lg" style="display:none;">Jogar Novamente</button>
+
     </div>
 
     <script>
+        // Raw data from Simulado_Constitucional2.docx
+        // IMPORTANT: This data needs to be correctly populated from the DOCX content.
+        // The content_fetcher provided the text, which should be pasted here.
         const rawQuizData = `
-Constituição Federal: Conceito, Classificações e Princípios Fundamentais
-Questão:  Conforme a doutrina majoritária, a Constituição Federal de 1988, quanto à sua origem, é classificada como:
-a) Outorgada
-b) Promulgada
-c) Cesarista
-d) Pactuada
-Gabarito:  b) Promulgada
-Questão:  O Preâmbulo da Constituição Federal de 1988, segundo o Supremo Tribunal Federal (STF), possui relevância jurídica e força normativa idêntica às normas do corpo principal da Constituição. Esta afirmação é:
-a) Verdadeira, pois o Preâmbulo estabelece os valores supremos da sociedade.
-b) Falsa, pois o Preâmbulo, segundo o STF, não se situa no âmbito do Direito, mas no domínio da política, não possuindo força normativa.
-c) Verdadeira, sendo norma de reprodução obrigatória nas Constituições Estaduais.
-d) Falsa, pois o Preâmbulo apenas possui força normativa para interpretar as cláusulas pétreas.
-Gabarito:  b) Falsa, pois o Preâmbulo, segundo o STF, não se situa no âmbito do Direito, mas no domínio da política, não possuindo força normativa.
-Questão:  São fundamentos da República Federativa do Brasil, expressos no Art. 1º da Constituição Federal:
-a) A soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa, e o pluralismo político.
-b) Construir uma sociedade livre, justa e solidária, e garantir o desenvolvimento nacional.
-c) A independência nacional, a prevalência dos direitos humanos e a autodeterminação dos povos.
-d) A forma republicana, o sistema representativo e o regime democrático.
-Gabarito:  a) A soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa, e o pluralismo político.
-Questão:  Quanto à sua alterabilidade, a Constituição Federal de 1988 é classificada como:
-a) Flexível
-b) Semirrígida
-c) Rígida
-d) Imutável
-Gabarito:  c) Rígida
-Segurança Pública (Art. 144)
-Questão:  A segurança pública, dever do Estado, direito e responsabilidade de todos, é exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio, através de quais órgãos listados no Art. 144 da Constituição Federal?
-a) Polícia federal, polícia rodoviária federal, polícias civis, polícias militares e corpos de bombeiros militares, e polícias penais federal, estaduais e distrital.
-b) Forças Armadas, polícia federal, polícias civis e guardas municipais.
-c) Polícia federal, polícia ferroviária federal, polícias civis, polícias militares e corpos de bombeiros militares.
-d) Exército, Marinha, Aeronáutica, polícias militares e polícias penais.
-Gabarito:  a) Polícia federal, polícia rodoviária federal, polícias civis, polícias militares e corpos de bombeiros militares, e polícias penais federal, estaduais e distrital.
-Questão:  Conforme o Art. 144, § 8º, da Constituição Federal, os Municípios poderão constituir guardas municipais destinadas à proteção de seus bens, serviços e instalações, conforme dispuser:
-a) Lei complementar federal.
-b) Lei ordinária federal.
-c) Lei estadual.
-d) A lei. (referindo-se à lei municipal)
-Gabarito:  d) A lei.
-Direitos e Garantias Fundamentais
-Questão:  O direito à vida, previsto no caput do Art. 5º da CF/88, abrange:
-a) Apenas o direito de não ser morto.
-b) Apenas o direito a uma vida digna.
-c) Tanto o direito de não ser privado da vida quanto o direito de ter uma vida digna.
-d) Exclusivamente a proibição da pena de morte, sem exceções.
-Gabarito:  c) Tanto o direito de não ser privado da vida quanto o direito de ter uma vida digna.
-Questão:  São direitos sociais expressamente mencionados no Art. 6º da Constituição Federal, entre outros:
+1. Constituição Federal: Conceito, Classificações, Princípios Fundamentais.
+Quanto à sua origem, a Constituição Federal de 1988 é classificada como:
+a) Promulgada, pois foi elaborada por uma Assembleia Nacional Constituinte eleita diretamente pelo povo.
+b) Outorgada, pois foi imposta unilateralmente sem participação popular. 
+Resposta Correta:  a) Promulgada, pois foi elaborada por uma Assembleia Nacional Constituinte eleita diretamente pelo povo.
+Um dos sentidos em que se pode conceituar uma Constituição é o sociológico, defendido por Ferdinand Lassalle, que entende a Constituição como:
+a) A norma fundamental hipotética que serve de fundamento lógico transcendental de validade da Constituição jurídico-positiva.
+b) A somatória dos fatores reais do poder dentro de uma sociedade, refletindo as forças sociais que a constituem.
+Resposta Correta:  b) A somatória dos fatores reais do poder dentro de uma sociedade, refletindo as forças sociais que a constituem.
+São fundamentos da República Federativa do Brasil, expressos no Art. 1º da Constituição Federal:
+a) A soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa, e o pluralismo político.   
+b) A garantia do desenvolvimento nacional, a erradicação da pobreza e a prevalência dos direitos humanos.
+Resposta Correta:  a) A soberania, a cidadania, a dignidade da pessoa humana, os valores sociais do trabalho e da livre iniciativa, e o pluralismo político.   
+1.2. Capítulo III Segurança Pública: Artigo 144.
+De acordo com o Art. 144 da Constituição Federal, a segurança pública é dever do Estado, direito e responsabilidade de todos, sendo exercida para a preservação da ordem pública e da incolumidade das pessoas e do patrimônio, através de quais órgãos, entre outros?    
+a) Exclusivamente pelas polícias federal, rodoviária federal, ferroviária federal, civis e militares e corpos de bombeiros militares.
+b) Através da polícia federal, polícia rodoviária federal, polícia ferroviária federal, polícias civis, polícias militares e corpos de bombeiros militares, e polícias penais federal, estaduais e distrital.
+Resposta Correta:  b) Através da polícia federal, polícia rodoviária federal, polícia ferroviária federal, polícias civis, polícias militares e corpos de bombeiros militares, e polícias penais federal, estaduais e distrital.   
+Segundo o Art. 144, § 5º, da Constituição Federal, às polícias militares cabem:
+a) As funções de polícia judiciária e a apuração de infrações penais, exceto as militares.
+b) A polícia ostensiva e a preservação da ordem pública; aos corpos de bombeiros militares, além das atribuições definidas em lei, incumbe a execução de atividades de defesa civil.
+Resposta Correta:  b) A polícia ostensiva e a preservação da ordem pública; aos corpos de bombeiros militares, além das atribuições definidas em lei, incumbe a execução de atividades de defesa civil.   
+2. Direitos e Garantias Fundamentais.
+Os direitos e garantias expressos na Constituição Federal:  
+a) Excluem outros decorrentes do regime e dos princípios por ela adotados, ou dos tratados internacionais em que a República Federativa do Brasil seja parte.
+b) Não excluem outros decorrentes do regime e dos princípios por ela adotados, ou dos tratados internacionais em que a República Federativa do Brasil seja parte.
+Resposta Correta:  b) Não excluem outros decorrentes do regime e dos princípios por ela adotados, ou dos tratados internacionais em que a República Federativa do Brasil seja parte.
+2.1. Direitos e Deveres Individuais e Coletivos, Direitos Sociais, Nacionalidade, Cidadania, Direitos Políticos, Partidos Políticos.    
+Quanto aos direitos e deveres individuais e coletivos, a Constituição Federal assegura que:
+a) Ninguém será privado da liberdade ou de seus bens sem o devido processo legal.
+b) A casa é asilo inviolável do indivíduo, podendo nela penetrar a qualquer hora do dia ou da noite, mesmo sem consentimento do morador, em caso de flagrante delito ou desastre, ou para prestar socorro, ou, durante o dia, por determinação judicial.
+Resposta Correta:  a) Ninguém será privado da liberdade ou de seus bens sem o devido processo legal.   
+São direitos sociais, previstos no Art. 6º da Constituição Federal, entre outros:
 a) A educação, a saúde, a alimentação, o trabalho, a moradia, o transporte, o lazer.
-b) A propriedade, a segurança, a livre manifestação do pensamento.
-c) A nacionalidade, a cidadania, os direitos políticos.
-d) O meio ambiente equilibrado, a proteção ao consumidor, a livre concorrência.
-Gabarito:  a) A educação, a saúde, a alimentação, o trabalho, a moradia, o transporte, o lazer.
-Questão:  A Constituição Federal estabelece que são brasileiros natos:
-a) Os nascidos na República Federativa do Brasil, ainda que de pais estrangeiros, desde que estes não estejam a serviço de seu país.
-b) Os nascidos no estrangeiro, de pai brasileiro ou mãe brasileira, desde que qualquer deles esteja a serviço da República Federativa do Brasil.
-c) Os nascidos no estrangeiro de pai brasileiro ou de mãe brasileira, desde que sejam registrados em repartição brasileira competente ou venham a residir na República Federativa do Brasil e optem, em qualquer tempo, depois de atingida a maioridade, pela nacionalidade brasileira.
-d) Todas as alternativas anteriores estão corretas.
-Gabarito:  d) Todas as alternativas anteriores estão corretas.
-Questão:  A perda da nacionalidade brasileira para aquele que adquirir outra nacionalidade ocorrerá, salvo nos casos de:
-a) Reconhecimento de nacionalidade originária pela lei estrangeira.
-b) Imposição de naturalização, pela norma estrangeira, ao brasileiro residente em estado estrangeiro, como condição para permanência em seu território ou para o exercício de direitos civis.
-c) Ambas as alternativas anteriores estão corretas.
-d) Nenhuma das alternativas anteriores, pois a perda é automática ao adquirir outra nacionalidade.
-Gabarito:  c) Ambas as alternativas anteriores estão corretas.
-Questão:  A soberania popular será exercida pelo sufrágio universal e pelo voto direto e secreto, com valor igual para todos, e, nos termos da lei, mediante:
-a) Plebiscito, referendo e iniciativa popular.
-b) Apenas eleições diretas para cargos executivos e legislativos.
-c) Veto popular, recall e consulta pública.
-d) Ação popular, mandado de injunção e habeas data.
-Gabarito:  a) Plebiscito, referendo e iniciativa popular.
-Questão:  De acordo com a Constituição Federal, os partidos políticos têm assegurada autonomia para definir sua estrutura interna, organização e funcionamento. Esta afirmação é:
-a) Falsa, pois os partidos políticos devem seguir rigidamente o modelo estabelecido em lei federal.
-b) Verdadeira, devendo seus estatutos estabelecer normas de disciplina e fidelidade partidária.
-c) Falsa, pois a organização interna é definida pelo Tribunal Superior Eleitoral.
-d) Verdadeira, mas sem a necessidade de observar a fidelidade partidária.
-Gabarito:  b) Verdadeira, devendo seus estatutos estabelecer normas de disciplina e fidelidade partidária.
-Organização Político-Administrativa
-Questão:  A organização político-administrativa da República Federativa do Brasil compreende:
-a) A União, os Estados, o Distrito Federal e os Municípios, todos autônomos.
-b) Apenas a União e os Estados, sendo o Distrito Federal e os Municípios territórios federais.
-c) A União, os Estados e os Municípios, sendo o Distrito Federal subordinado à União.
-d) Apenas a União, como entidade soberana, e os Estados como divisões administrativas.
-Gabarito:  a) A União, os Estados, o Distrito Federal e os Municípios, todos autônomos.
-Questão:  A criação, a incorporação, a fusão e o desmembramento de Municípios far-se-ão por:
-a) Lei federal, após consulta plebiscitária às populações dos Municípios envolvidos.
-b) Lei estadual, dentro do período determinado por Lei Complementar Federal, e dependerão de consulta prévia, mediante plebiscito, às populações dos Municípios envolvidos, após divulgação dos Estudos de Viabilidade Municipal.
-c) Decreto do Governador do Estado, após aprovação da Assembleia Legislativa.
-d) Lei complementar estadual, dispensada a consulta plebiscitária.
-Gabarito:  b) Lei estadual, dentro do período determinado por Lei Complementar Federal, e dependerão de consulta prévia, mediante plebiscito, às populações dos Municípios envolvidos, após divulgação dos Estudos de Viabilidade Municipal.
-Questão:  Os Territórios Federais integram a União, e sua criação, transformação em Estado ou reintegração ao Estado de origem serão reguladas em:
-a) Lei ordinária federal.
-b) Lei complementar.
-c) Decreto presidencial.
-d) Resolução do Congresso Nacional.
-Gabarito:  b) Lei complementar.
-Administração Pública
-Questão:  A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios de:
-a) Legalidade, impessoalidade, moralidade, publicidade e eficiência.
-b) Supremacia do interesse público, razoabilidade, proporcionalidade e motivação.
-c) Autotutela, hierarquia, discricionariedade e vinculação.
-d) Economicidade, celeridade, formalismo moderado e boa-fé.
-Gabarito:  a) Legalidade, impessoalidade, moralidade, publicidade e eficiência.
-Questão:  A investidura em cargo ou emprego público depende de aprovação prévia em concurso público de provas ou de provas e títulos, de acordo com a natureza e a complexidade do cargo ou emprego, na forma prevista em lei, ressalvadas as nomeações para:
-a) Cargos em comissão declarados em lei de livre nomeação e exoneração.
-b) Funções de confiança, exercidas exclusivamente por servidores ocupantes de cargo efetivo.
-c) Cargos eletivos.
-d) Apenas a alternativa "a" está correta.
-Gabarito:  d) Apenas a alternativa "a" está correta.
-Questão:  São estáveis após três anos de efetivo exercício os servidores nomeados para cargo de provimento efetivo em virtude de concurso público. O servidor público estável só perderá o cargo:
-a) Em virtude de sentença judicial transitada em julgado ou mediante processo administrativo em que lhe seja assegurada ampla defesa.
-b) Mediante procedimento de avaliação periódica de desempenho, na forma de lei complementar, assegurada ampla defesa.
-c) Ambas as alternativas anteriores estão corretas.
-d) Apenas por decisão unilateral da autoridade administrativa superior.
-Gabarito:  c) Ambas as alternativas anteriores estão corretas.
-Poder Executivo: Atribuições do Presidente da República e dos Ministros de Estado
-Questão:  Compete privativamente ao Presidente da República:
-a) Sancionar, promulgar e fazer publicar as leis, bem como expedir decretos e regulamentos para sua fiel execução.
-b) Julgar as contas prestadas pelo Tribunal de Contas da União.
-c) Autorizar referendo e convocar plebiscito.
-d) Elaborar o regimento interno do Congresso Nacional.
-Gabarito:  a) Sancionar, promulgar e fazer publicar as leis, bem como expedir decretos e regulamentos para sua fiel execução.
-Questão:  Os Ministros de Estado serão escolhidos dentre brasileiros:
-a) Apenas natos, maiores de trinta e cinco anos.
-b) Maiores de vinte e um anos e no exercício dos direitos políticos.
-c) Que sejam membros do Congresso Nacional.
-d) Apenas com formação superior na área de atuação do respectivo Ministério.
-Gabarito:  b) Maiores de vinte e um anos e no exercício dos direitos políticos.
-Questão:  O Presidente da República poderá delegar aos Ministros de Estado, entre outras, a atribuição de:
-a) Declarar guerra, no caso de agressão estrangeira, autorizado pelo Congresso Nacional.
-b) Conceder indulto e comutar penas, com audiência, se necessário, dos órgãos instituídos em lei.
-c) Vetar projetos de lei, total ou parcialmente.
-d) Editar medidas provisórias com força de lei.
-Gabarito:  b) Conceder indulto e comutar penas, com audiência, se necessário, dos órgãos instituídos em lei.
-Finanças Públicas: Normas Gerais e Orçamentos
-Questão:  O Plano Plurianual (PPA), as Diretrizes Orçamentárias (LDO) e os Orçamentos Anuais (LOA) são instrumentos de planejamento e orçamento de iniciativa:
-a) Exclusiva do Poder Legislativo.
-b) Exclusiva do Poder Executivo.
-c) Concorrente entre o Poder Executivo e o Poder Legislativo.
-d) Do Tribunal de Contas da União.
-Gabarito:  b) Exclusiva do Poder Executivo.
-Questão:  A Lei de Diretrizes Orçamentárias (LDO) compreenderá as metas e prioridades da administração pública federal, incluindo as despesas de capital para o exercício financeiro subsequente, orientará a elaboração da lei orçamentária anual, disporá sobre as alterações na legislação tributária e estabelecerá:
-a) O detalhamento de todas as receitas e despesas do governo.
-b) A política de aplicação das agências financeiras oficiais de fomento.
-c) As normas para fiscalização financeira e controle externo.
-d) Os programas de duração continuada.
-Gabarito:  b) A política de aplicação das agências financeiras oficiais de fomento.
-Questão:  Nenhum investimento cuja execução ultrapasse um exercício financeiro poderá ser iniciado sem prévia inclusão:
-a) Na lei orçamentária anual, ou sem lei que autorize a inclusão, sob pena de crime de responsabilidade.
-b) No plano plurianual, ou sem lei que autorize a inclusão, sob pena de crime de responsabilidade.
-c) Na lei de diretrizes orçamentárias, ou sem autorização expressa do Tribunal de Contas.
-d) Em decreto presidencial específico, após aprovação do Congresso Nacional.
-Gabarito:  b) No plano plurianual, ou sem lei que autorize a inclusão, sob pena de crime de responsabilidade.
-Ordem Social: Disposições Gerais e Previdência Social
-Questão:  A ordem social tem como base o primado do trabalho, e como objetivo:
-a) O bem-estar e a justiça sociais.
-b) O desenvolvimento econômico e a livre concorrência.
-c) A soberania nacional e a propriedade privada.
-d) A garantia da ordem pública e a segurança individual.
-Gabarito:  a) O bem-estar e a justiça sociais.
-Questão:  A seguridade social compreende um conjunto integrado de ações de iniciativa dos Poderes Públicos e da sociedade, destinadas a assegurar os direitos relativos à:
-a) Saúde, previdência e assistência social.
-b) Educação, cultura e esporte.
-c) Moradia, transporte e lazer.
-d) Segurança, trabalho e meio ambiente.
-Gabarito:  a) Saúde, previdência e assistência social.
-Questão:  A assistência social será prestada a quem dela necessitar, independentemente de:
-a) Comprovação de residência no país.
-b) Contribuição à seguridade social.
-c) Nacionalidade brasileira.
-d) Idade mínima estabelecida em lei.
-Gabarito:  b) Contribuição à seguridade social.
-Questão:  Um dos objetivos da assistência social, conforme a Constituição Federal, é:
-a) A garantia de um salário mínimo de benefício mensal à pessoa portadora de deficiência e ao idoso que comprovem não possuir meios de prover à própria manutenção ou de tê-la provida por sua família.
-b) A proteção à família, à maternidade, à infância, à adolescência e à velhice.
-c) A redução da vulnerabilidade socioeconômica de famílias em situação de pobreza ou de extrema pobreza.
-d) Todas as alternativas anteriores estão corretas.
-Gabarito:  d) Todas as alternativas anteriores estão corretas.
-Questão:  O § 1º do Art. 6º da Constituição Federal (incluído pela EC nº 114/2021) estabelece que todo brasileiro em situação de vulnerabilidade social terá direito a uma renda básica familiar, garantida pelo Poder Público em programa permanente de transferência de renda, cujas normas e requisitos de acesso serão determinados em lei. Esta afirmação é:
-a) Falsa, pois a Constituição não prevê um programa permanente de transferência de renda.
-b) Verdadeira, devendo-se observar a legislação fiscal e orçamentária.
-c) Falsa, pois o direito à renda básica familiar é restrito a idosos e pessoas com deficiência.
-d) Verdadeira, mas sua implementação independe de lei, bastando decreto presidencial.
-Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçamentária.
-        `;
+b) O direito de propriedade e o direito de herança.
+Resposta Correta:  a) A educação, a saúde, a alimentação, o trabalho, a moradia, o transporte, o lazer.
+Sobre a nacionalidade, um dos cargos privativos de brasileiro nato é o de:
+a) Ministro do Supremo Tribunal Federal.
+b) Governador de Estado.
+Resposta Correta:  a) Ministro do Supremo Tribunal Federal.
+A capacidade eleitoral ativa (direito de votar) e a capacidade eleitoral passiva (direito de ser votado) constituem, respectivamente, aspectos dos direitos:
+a) Sociais.
+b) Políticos.
+Resposta Correta:  b) Políticos.
+Os partidos políticos, conforme a Constituição Federal:
+a) Podem receber recursos financeiros de entidade ou governo estrangeiros.
+b) Têm direito a recursos do fundo partidário e acesso gratuito ao rádio e à televisão, na forma da lei.
+Resposta Correta:  b) Têm direito a recursos do fundo partidário e acesso gratuito ao rádio e à televisão, na forma da lei.
+3. Organização Político-Administrativa: União, Estados, Distrito Federal, Municípios e Territórios.
+A organização político-administrativa da República Federativa do Brasil compreende:
+a) A União, os Estados, o Distrito Federal e os Municípios, todos autônomos, nos termos da Constituição.   
+b) A União, os Estados e os Municípios, sendo o Distrito Federal e os Territórios subordinados à União.
+Resposta Correta:  a) A União, os Estados, o Distrito Federal e os Municípios, todos autônomos, nos termos da Constituição.
+Os Estados podem incorporar-se entre si, subdividir-se ou desmembrar-se para se anexarem a outros, ou formarem novos Estados ou Territórios Federais, dependendo de:
+a) Aprovação da população diretamente interessada, através de plebiscito, e do Congresso Nacional, por lei complementar.
+b) Decisão unilateral do Presidente da República, referendada pelo Senado Federal.
+Resposta Correta:  a) Aprovação da população diretamente interessada, através de plebiscito, e do Congresso Nacional, por lei complementar.
+4. Administração Pública: Disposições Gerais, Servidores Públicos.
+A administração pública direta e indireta de qualquer dos Poderes da União, dos Estados, do Distrito Federal e dos Municípios obedecerá aos princípios de:
+a) Legalidade, impessoalidade, moralidade, publicidade e eficiência, entre outros.   
+b) Economicidade, celeridade, informalidade e interesse particular. 
+Resposta Correta:  a) Legalidade, impessoalidade, moralidade, publicidade e eficiência, entre outros.
+A investidura em cargo ou emprego público:
+a) Depende de aprovação prévia em concurso público de provas ou de provas e títulos, de acordo com a natureza e a complexidade do cargo ou emprego, na forma prevista em lei, ressalvadas as nomeações para cargo em comissão declarado em lei de livre nomeação e exoneração.
+b) Pode ocorrer por indicação política, independentemente de concurso, para cargos técnicos.
+Resposta Correta:  a) Depende de aprovação prévia em concurso público de provas ou de provas e títulos, de acordo com a natureza e a complexidade do cargo ou emprego, na forma prevista em lei, ressalvadas as nomeações para cargo em comissão declarado em lei de livre nomeação e exoneração.
+5. Poder Executivo: Atribuições do Presidente da República e dos Ministros de Estado.
+Compete privativamente ao Presidente da República:
+a) Processar e julgar os Ministros do Supremo Tribunal Federal nos crimes de responsabilidade.
+b) Sancionar, promulgar e fazer publicar as leis, bem como expedir decretos e regulamentos para sua fiel execução.
+Resposta Correta:  b) Sancionar, promulgar e fazer publicar as leis, bem como expedir decretos e regulamentos para sua fiel execução.
+Os Ministros de Estado são escolhidos:
+a) Pelo Congresso Nacional, mediante lista tríplice aprovada pelo Presidente da República.
+b) Dentre brasileiros maiores de vinte e um anos e no exercício dos direitos políticos, sendo nomeados e exonerados pelo Presidente da República. 
+Resposta Correta:  b) Dentre brasileiros maiores de vinte e um anos e no exercício dos direitos políticos, sendo nomeados e exonerados pelo Presidente da República.
+6. Constituição Federal (Aspectos Gerais).
+A Constituição Federal de 1988, quanto à sua alterabilidade, é classificada como:  
+a) Flexível, podendo ser alterada pelo mesmo processo legislativo das leis ordinárias.
+b) Rígida, exigindo um processo legislativo mais dificultoso para sua alteração do que o das normas infraconstitucionais.
+Resposta Correta:  b) Rígida, exigindo um processo legislativo mais dificultoso para sua alteração do que o das normas infraconstitucionais.
+7. Finanças Públicas: Normas Gerais, Orçamentos.
+A lei de diretrizes orçamentárias (LDO) compreenderá:
+a) As metas e prioridades da administração pública federal, incluindo as despesas de capital para o exercício financeiro subsequente, orientará a elaboração da lei orçamentária anual, disporá sobre as alterações na legislação tributária e estabelecerá a política de aplicação das agências financeiras oficiais de fomento.   
+b) Exclusivamente o orçamento fiscal referente aos Poderes da União, seus fundos, órgãos e entidades da administração direta e indireta. 
+Resposta Correta:  a) As metas e prioridades da administração pública federal, incluindo as despesas de capital para o exercício financeiro subsequente, orientará a elaboração da lei orçamentária anual, disporá sobre as alterações na legislação tributária e estabelecerá a política de aplicação das agências financeiras oficiais de fomento.   
+A Constituição Federal veda:
+a) A vinculação de receita de impostos a órgão, fundo ou despesa, ressalvadas algumas exceções.
+b) A instituição de impostos sobre o patrimônio e a renda, sendo estes de competência exclusiva dos Estados.
+Resposta Correta:  a) A vinculação de receita de impostos a órgão, fundo ou despesa, ressalvadas algumas exceções.
+8. Ordem Social: Disposições Gerais, Previdência Social.
+A ordem social tem como base:
+a) A livre concorrência e a propriedade privada.
+b) O primado do trabalho, e como objetivo o bem-estar e a justiça sociais. 
+Resposta Correta:  b) O primado do trabalho, e como objetivo o bem-estar e a justiça sociais.
+A seguridade social compreende um conjunto integrado de ações de iniciativa dos Poderes Públicos e da sociedade, destinadas a assegurar os direitos relativos à:
+a) Saúde, à previdência e à assistência social.   
+b) Educação, cultura e desporto.
+Resposta Correta:  a) Saúde, à previdência e à assistência social.
+Perguntas Adicionais Variadas (dentro dos temas)
+O poder constituinte originário é caracterizado, entre outros, por ser:
+a) Limitado juridicamente e condicionado.
+b) Inicial, autônomo e ilimitado juridicamente.
+Resposta Correta:  b) Inicial, autônomo e ilimitado juridicamente.
+Os Territórios Federais, se vierem a ser criados:
+a) Integram a União e não possuem autonomia política como os Estados.
+b) São entes federativos autônomos, com capacidade de auto-organização similar aos Estados.
+Resposta Correta:  a) Integram a União e não possuem autonomia política como os Estados.
+O controle de constitucionalidade prévio ou preventivo de um projeto de lei pode ser realizado:
+a) Exclusivamente pelo Poder Judiciário após a sanção presidencial.
+b) Pelo Poder Legislativo, por meio de suas comissões, e pelo Poder Executivo, através do veto jurídico.
+Resposta Correta:  b) Pelo Poder Legislativo, por meio de suas comissões, e pelo Poder Executivo, através do veto jurídico.
+A perda do mandato de um Deputado Federal que utilizar-se do mandato para a prática de atos de corrupção ou de improbidade administrativa será decidida:
+a) Pelo Supremo Tribunal Federal, em processo judicial específico.
+b) Pela Câmara dos Deputados, por voto aberto da maioria absoluta de seus membros, mediante provocação da respectiva Mesa ou de partido político representado no Congresso Nacional, assegurada ampla defesa. 
+Resposta Correta:  b) Pela Câmara dos Deputados, por voto aberto da maioria absoluta de seus membros, mediante provocação da respectiva Mesa ou de partido político representado no Congresso Nacional, assegurada ampla defesa.
+A medida provisória, em caso de relevância e urgência:
+a) Pode ser adotada pelo Presidente da República, com força de lei, devendo submetê-las de imediato ao Congresso Nacional.
+b) É editada pelo Congresso Nacional, com sanção do Presidente da República.
+Resposta Correta:  a) Pode ser adotada pelo Presidente da República, com força de lei, devendo submetê-las de imediato ao Congresso Nacional.
+Compete à União legislar privativamente sobre:
+a) Direito tributário, financeiro, penitenciário, econômico e urbanístico.
+b) Direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho.
+Resposta Correta:  b) Direito civil, comercial, penal, processual, eleitoral, agrário, marítimo, aeronáutico, espacial e do trabalho.   
+O Ato das Disposições Constitucionais Transitórias (ADCT):
+a) Possui natureza jurídica inferior às normas do corpo permanente da Constituição, podendo ser alterado por lei ordinária.
+b) Tem natureza de norma constitucional e estabelece regras de transição entre o ordenamento jurídico anterior e o novo.
+Resposta Correta:  b) Tem natureza de norma constitucional e estabelece regras de transição entre o ordenamento jurídico anterior e o novo.
+Os direitos e garantias fundamentais previstos no Art. 5º da Constituição Federal são destinados:
+a) Exclusivamente aos brasileiros natos.
+b) Aos brasileiros e aos estrangeiros residentes no País, sendo que a doutrina e o STF estendem muitos desses direitos também aos estrangeiros não residentes e apátridas.
+Resposta Correta:  b) Aos brasileiros e aos estrangeiros residentes no País, sendo que a doutrina e o STF estendem muitos desses direitos também aos estrangeiros não residentes e apátridas.
+`;
 
         // DOM Elements
+        const initialMessageScreen = document.getElementById('initial-message-screen');
+        const gameContentEl = document.querySelector('.game-content');
         const questionTextEl = document.getElementById('question-text');
         const option1Button = document.getElementById('option1');
         const option2Button = document.getElementById('option2');
@@ -329,19 +362,21 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
         const scoreEl = document.getElementById('score');
         const livesIconsEl = document.getElementById('lives-icons');
         const skipCountEl = document.getElementById('skip-count');
+        const questionCounterEl = document.getElementById('question-counter');
         const messageAreaEl = document.getElementById('message-area');
         const startButton = document.getElementById('start-button');
-        const restartButton = document.getElementById('restart-button');
-        const secondHandEl = document.getElementById('second-hand');
-        const clockContainerEl = document.getElementById('clock-container');
-        const optionsAreaEl = document.getElementById('options-area');
-        const questionAreaEl = document.getElementById('question-area');
-        const statusBarEl = document.getElementById('status-bar');
-
+        const digitalTimerEl = document.getElementById('digital-timer');
+        
+        const winScreenEl = document.getElementById('win-screen');
+        const loseScreenEl = document.getElementById('lose-screen');
+        const finalScoreLoseEl = document.getElementById('final-score-lose');
+        const restartButtonWin = document.getElementById('restart-button-win');
+        const restartButtonLose = document.getElementById('restart-button-lose');
 
         // Game State
-        let allQuestions = [];
-        let shuffledQuestions = [];
+        const TOTAL_QUESTIONS_IN_GAME = 15;
+        let allParsedQuestions = [];
+        let gameQuestions = [];
         let currentQuestionIndex = 0;
         let score = 0;
         let lives = 3;
@@ -349,76 +384,48 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
         let timerInterval;
         let timeLeft = 60; // 60 seconds per question
 
-        function parseRawQuestions(rawText) {
-            const parsed = [];
-            const rawQuestionBlocks = rawText.trim().split("Questão:").slice(1); 
+        function parseQuestionsFromSimulado2(rawText) {
+            const questions = [];
+            const lines = rawText.trim().split('\n');
+            let currentQBuilder = { textLines: [], optA: null, optB: null };
 
-            for (const block of rawQuestionBlocks) {
-                const entry = block.trim();
-                const lines = entry.split('\n').map(line => line.trim()).filter(line => line);
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                if (!line) continue;
 
-                if (lines.length < 6) { // Question, 4 options, 1 gabarito
-                    console.warn("Skipping malformed block (not enough lines):", entry);
-                    continue;
-                }
+                if (line.startsWith('a) ')) {
+                    currentQBuilder.optA = line.substring(3).trim();
+                } else if (line.startsWith('b) ')) {
+                    currentQBuilder.optB = line.substring(3).trim();
+                } else if (line.startsWith('Resposta Correta: ')) {
+                    const match = line.match(/Resposta Correta:\s*([ab])\)\s*(.*)/i);
+                    if (match) {
+                        const correctOptKey = match[1].toLowerCase();
+                        // const correctOptText = match[2].trim(); // Full text of correct answer
 
-                const question = lines[0];
-                const optionsMap = {};
-                let correctLetter = '';
+                        const questionText = currentQBuilder.textLines.join(' ').trim();
+                        
+                        if (questionText && currentQBuilder.optA && currentQBuilder.optB && correctOptKey) {
+                            const options = [];
+                            options.push({ text: currentQBuilder.optA, correct: correctOptKey === 'a' });
+                            options.push({ text: currentQBuilder.optB, correct: correctOptKey === 'b' });
+                            
+                            options.sort(() => 0.5 - Math.random()); // Shuffle presented options
 
-                for (let i = 1; i < lines.length; i++) {
-                    const line = lines[i];
-                    if (line.startsWith('a)')) optionsMap.a = line.substring(2).trim();
-                    else if (line.startsWith('b)')) optionsMap.b = line.substring(2).trim();
-                    else if (line.startsWith('c)')) optionsMap.c = line.substring(2).trim();
-                    else if (line.startsWith('d)')) optionsMap.d = line.substring(2).trim();
-                    else if (line.toLowerCase().startsWith('gabarito:')) {
-                        const gabaritoMatch = line.match(/Gabarito:\s*([a-d])/i);
-                        if (gabaritoMatch) {
-                            correctLetter = gabaritoMatch[1].toLowerCase();
+                            questions.push({ question: questionText, options: options });
+                        } else {
+                            console.warn("Skipping incomplete question block. Q:", questionText, "OptA:", currentQBuilder.optA, "OptB:", currentQBuilder.optB, "Key:", correctOptKey);
                         }
-                        break; 
+                        currentQBuilder = { textLines: [], optA: null, optB: null }; // Reset for next question
                     }
+                } else {
+                    // It's part of the question text or a topic header
+                    currentQBuilder.textLines.push(line);
                 }
-
-                if (!correctLetter || Object.keys(optionsMap).length < 4) {
-                    console.warn("Could not parse all options or gabarito for block:", entry, "Q:", question, "Opts:", optionsMap, "CL:", correctLetter);
-                    continue;
-                }
-                
-                const correctAnswerText = optionsMap[correctLetter];
-                if (!correctAnswerText) {
-                    console.warn("Correct answer text not found for letter:", correctLetter, "in question:", question);
-                    continue;
-                }
-
-                const incorrectOptionsTexts = [];
-                for (const key in optionsMap) {
-                    if (key !== correctLetter) {
-                        incorrectOptionsTexts.push(optionsMap[key]);
-                    }
-                }
-
-                if (incorrectOptionsTexts.length === 0) {
-                     console.warn("Not enough incorrect options for question:", question);
-                     continue;
-                }
-                
-                const chosenIncorrectAnswerText = incorrectOptionsTexts.sort(() => 0.5 - Math.random())[0];
-
-                const gameOptions = [
-                    { text: correctAnswerText, correct: true },
-                    { text: chosenIncorrectAnswerText, correct: false }
-                ];
-                gameOptions.sort(() => 0.5 - Math.random()); // Shuffle the two options
-
-                parsed.push({ question, options: gameOptions });
             }
-            if (parsed.length === 0 && rawQuestionBlocks.length > 0) {
-                 console.error("Parsing failed to produce any questions. Check input data and parsing logic.");
-            }
-            return parsed;
+            return questions.filter(q => q.options.length === 2 && q.options[0].text && q.options[1].text);
         }
+
 
         function updateLivesDisplay() {
             livesIconsEl.innerHTML = '';
@@ -428,24 +435,68 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
                 heart.textContent = '❤️';
                 livesIconsEl.appendChild(heart);
             }
-             for (let i = lives; i < 3; i++) { // Show empty hearts or placeholders if preferred
+            for (let i = lives; i < 3; i++) {
                 const emptyHeart = document.createElement('span');
                 emptyHeart.classList.add('heart-icon', 'opacity-30');
                 emptyHeart.textContent = '❤️';
                 livesIconsEl.appendChild(emptyHeart);
             }
         }
+        
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = seconds % 60;
+            return `${String(minutes).padStart(2, '0')}:${String(remainingSeconds).padStart(2, '0')}`;
+        }
 
-        function startGame() {
-            allQuestions = parseRawQuestions(rawQuizData);
-            if (allQuestions.length === 0) {
-                messageAreaEl.textContent = "Erro ao carregar perguntas. Tente recarregar a página.";
+        function startTimer() {
+            timeLeft = 60;
+            digitalTimerEl.textContent = formatTime(timeLeft);
+            clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                digitalTimerEl.textContent = formatTime(timeLeft);
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    handleAnswer(false, true); // Timeout
+                }
+            }, 1000);
+        }
+
+        function showInitialScreen() {
+            initialMessageScreen.style.display = 'flex';
+            gameContentEl.style.display = 'none';
+            winScreenEl.style.display = 'none';
+            loseScreenEl.style.display = 'none';
+        }
+        
+        function setupGame() {
+            allParsedQuestions = parseQuestionsFromSimulado2(rawQuizData);
+            if (allParsedQuestions.length === 0) {
+                messageAreaEl.textContent = "Erro: Nenhuma pergunta carregada. Verifique os dados.";
                 messageAreaEl.className = 'message-incorrect';
+                startButton.style.display = 'none'; // Hide start if no questions
+                return;
+            }
+
+            // Shuffle all parsed questions
+            allParsedQuestions.sort(() => 0.5 - Math.random());
+            // Select up to TOTAL_QUESTIONS_IN_GAME
+            gameQuestions = allParsedQuestions.slice(0, TOTAL_QUESTIONS_IN_GAME);
+            
+            if (gameQuestions.length < TOTAL_QUESTIONS_IN_GAME) {
+                console.warn(`Aviso: Foram carregadas ${gameQuestions.length} perguntas, menos que as ${TOTAL_QUESTIONS_IN_GAME} desejadas.`);
+                // Update total in counter if fewer questions loaded
+                 questionCounterEl.textContent = `${currentQuestionIndex + 1} / ${gameQuestions.length}`;
+            }
+             if (gameQuestions.length === 0) {
+                initialMessageScreen.innerHTML = '<p class="text-red-500 font-bold">Erro Crítico: Nenhuma pergunta válida foi encontrada no simulado. Por favor, verifique o formato do arquivo.</p>';
+                initialMessageScreen.style.display = 'flex';
                 startButton.style.display = 'none';
                 return;
             }
 
-            shuffledQuestions = [...allQuestions].sort(() => 0.5 - Math.random());
+
             currentQuestionIndex = 0;
             score = 0;
             lives = 3;
@@ -454,52 +505,32 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
             scoreEl.textContent = score;
             updateLivesDisplay();
             skipCountEl.textContent = skipsAvailable;
-            skipButton.disabled = false;
-            skipButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            skipButton.classList.add('bg-amber-500', 'hover:bg-amber-600');
-
-
-            startButton.style.display = 'none';
-            restartButton.style.display = 'none';
-            messageAreaEl.textContent = '';
+            skipButton.disabled = skipsAvailable === 0;
+             if (skipsAvailable === 0) {
+                skipButton.classList.add('opacity-50', 'cursor-not-allowed');
+            } else {
+                skipButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            }
             
-            clockContainerEl.style.display = 'block';
-            optionsAreaEl.style.display = 'grid';
-            questionAreaEl.style.display = 'block';
-            statusBarEl.style.display = 'flex';
-            skipButton.style.display = 'inline-block';
-
+            messageAreaEl.textContent = '';
+            initialMessageScreen.style.display = 'none';
+            gameContentEl.style.display = 'block';
+            winScreenEl.style.display = 'none';
+            loseScreenEl.style.display = 'none';
 
             loadQuestion();
         }
 
-        function drawClock() {
-            const angle = (timeLeft / 60) * 360;
-            secondHandEl.setAttribute('transform', `rotate(${angle} 50 50)`);
-        }
-
-        function startTimer() {
-            timeLeft = 60;
-            drawClock(); // Initial position
-            clearInterval(timerInterval); // Clear any existing timer
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                drawClock();
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    handleAnswer(false, true); // Timeout is like a wrong answer
-                }
-            }, 1000);
-        }
 
         function loadQuestion() {
-            if (currentQuestionIndex >= shuffledQuestions.length) {
-                endGame(true); // Won the game
+            if (currentQuestionIndex >= gameQuestions.length) {
+                endGame(true); // Won
                 return;
             }
 
-            const currentQuestion = shuffledQuestions[currentQuestionIndex];
-            questionTextEl.textContent = currentQuestion.question;
+            const currentQuestion = gameQuestions[currentQuestionIndex];
+            questionTextEl.innerHTML = currentQuestion.question; // Use innerHTML if question has formatting
+            
             option1Button.textContent = currentQuestion.options[0].text;
             option1Button.onclick = () => handleAnswer(currentQuestion.options[0].correct);
             option2Button.textContent = currentQuestion.options[1].text;
@@ -507,9 +538,10 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
 
             option1Button.disabled = false;
             option2Button.disabled = false;
-            option1Button.className = 'option-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow';
-            option2Button.className = 'option-button bg-sky-500 hover:bg-sky-600 text-white font-semibold py-3 px-4 rounded-lg shadow';
+            option1Button.className = 'option-button button-base'; // Reset classes
+            option2Button.className = 'option-button button-base';
 
+            questionCounterEl.textContent = `${currentQuestionIndex + 1} / ${gameQuestions.length}`;
             messageAreaEl.textContent = '';
             startTimer();
         }
@@ -537,10 +569,10 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
             updateLivesDisplay();
 
             if (lives <= 0) {
-                setTimeout(() => endGame(false), 2000); // Lost the game
+                setTimeout(() => endGame(false), 2000); // Lost
             } else {
                 currentQuestionIndex++;
-                setTimeout(loadQuestion, 2000); // Wait 2 seconds before next question
+                setTimeout(loadQuestion, 2000); 
             }
         }
 
@@ -555,7 +587,6 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
                 if (skipsAvailable === 0) {
                     skipButton.disabled = true;
                     skipButton.classList.add('opacity-50', 'cursor-not-allowed');
-                    skipButton.classList.remove('bg-amber-500', 'hover:bg-amber-600');
                 }
                 currentQuestionIndex++;
                 setTimeout(loadQuestion, 1500);
@@ -564,32 +595,23 @@ Gabarito:  b) Verdadeira, devendo-se observar a legislação fiscal e orçament�
 
         function endGame(won) {
             clearInterval(timerInterval);
-            clockContainerEl.style.display = 'none';
-            optionsAreaEl.style.display = 'none';
-            questionAreaEl.style.display = 'none';
-            skipButton.style.display = 'none';
+            gameContentEl.style.display = 'none';
 
-            if (won) {
-                messageAreaEl.textContent = `Parabéns! Você completou o quiz! Pontuação final: ${score} 🎉`;
-                messageAreaEl.className = 'message-correct text-xl';
+            if (won && currentQuestionIndex >= gameQuestions.length) { // Ensure all questions were answered for a win
+                winScreenEl.style.display = 'flex';
             } else {
-                messageAreaEl.textContent = `Fim de Jogo! Você não tem mais vidas. Pontuação final: ${score} 💔`;
-                messageAreaEl.className = 'message-incorrect text-xl';
+                finalScoreLoseEl.textContent = score;
+                loseScreenEl.style.display = 'flex';
             }
-            restartButton.style.display = 'inline-block';
         }
         
-        // Initial setup to hide game elements until start
-        clockContainerEl.style.display = 'none';
-        optionsAreaEl.style.display = 'none';
-        questionAreaEl.style.display = 'none';
-        statusBarEl.style.display = 'none';
-        skipButton.style.display = 'none';
-
-
-        startButton.addEventListener('click', startGame);
-        restartButton.addEventListener('click', startGame); // Restart calls startGame to reset everything
+        startButton.addEventListener('click', setupGame);
+        restartButtonWin.addEventListener('click', showInitialScreen);
+        restartButtonLose.addEventListener('click', showInitialScreen);
         skipButton.addEventListener('click', skipQuestion);
+
+        // Initialize
+        showInitialScreen();
 
     </script>
 </body>
